@@ -17,7 +17,7 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get('http://localhost:8000')
 
         # проверяем титул и заголовок страницы утверждением "To-Do"
-        self.assertIn('To-Do', self.browser.title)
+        self.assertIn('To-Do lists', self.browser.title)
         self.fail('Finish the test')
 
         # вводим и добавляем элемент списка дел
