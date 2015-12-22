@@ -44,12 +44,20 @@ class NewVisitorTest(unittest.TestCase):
 
         # дожен все еще присутстововать текст-бокс для добавления других элементов.
         # введем "Use peacock feathers to make a fly"
-        self.fail('Finish the test!')
+        # 2 self.fail('Finish the test!')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
 
         # страница обновляется снова и мы видим уже оба элемента.
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1.Buy peacock feathers', [row.text for row in rows])
+        self.assertIn('2.Use peacock feathers to make a fly', [row.text for row in rows])
 
         # возможность сохранить данный список дел с созданием для него уникально ссылки - какой нибудь пояснительный текст для этого эффекта
-
+        self.fail('Finish the test!')
+        
         # преходим по данной ссылке, после чего должны увидеть этот список дел
 
         # Если остаемся довольными, то идем спать.
