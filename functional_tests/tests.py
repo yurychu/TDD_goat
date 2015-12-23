@@ -43,6 +43,12 @@ class NewVisitorTest(LiveServerTestCase):
         # "1: Buy peacock feathers как элемент списка дел"
 
         inputbox.send_keys(Keys.ENTER)
+        
+        # добавили запоминалку ссылки на личный список дел пользователя
+        # для проверки в конце теста
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+        self.check_for_row_in_list_table('1.Buy peacock feathers')
 
         # страница обновляется, должны увидеть введенный элемент
 
@@ -64,17 +70,36 @@ class NewVisitorTest(LiveServerTestCase):
         self.check_for_row_in_list_table('1.Buy peacock feathers')
         self.check_for_row_in_list_table('2.Use peacock feathers to make a fly')
 
-        #table = self.browser.find_element_by_id('id_list_table')
-        #rows = table.find_elements_by_tag_name('tr')
-        #self.assertIn('1.Buy peacock feathers', [row.text for row in rows])
-        #self.assertIn('2.Use peacock feathers to make a fly', [row.text for row in rows])
+        # Новый пользователь, Френсис заходит на сайт
+        ## Нам нужно использовать новую сессию, что бы быть уверенными, что
+        ## информация от Эдит не повлияет в виде куки и тд
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
 
-        # возможность сохранить данный список дел с созданием для него уникально ссылки - какой нибудь пояснительный текст для этого эффекта
-        self.fail('Finish the test!')
-        
-        # преходим по данной ссылке, после чего должны увидеть этот список дел
+        # Френсис посещает домашнуюю страницу сайта.
+        # Здесь он не должен увидеть список Эдит.
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('make a fly', page_text)
 
-        # Если остаемся довольными, то идем спать.
+        # Френсис начинает вводить элементы своего списка дел
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy milk')
+        inputbox.send_keys(Keys.ENTER)
+
+        # Френсис так же получает уникальную ссылку на свой список
+        # она должна отличаться от ссылки Эдит
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, '/lists/.+')
+        self.assertNotEqual(francis_list_url, edith_list_url)
+
+        # И опять таки нету никаких следов списка Эдит
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertIn('Buy milk', page_text)
+
+        # Если эти оба останутся довольными, то идем спать.
 
 if __name__ == "__main__":
     unittest.main(warnings='ignore')
