@@ -1,10 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-import unittest
-import time
+from django.test import LiveServerTestCase
 
-class NewVisitorTest(unittest.TestCase):
+
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -22,7 +22,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # Функциональный тест приложения составления списка дел
         # здесь проверяем нашу домашнюю страницу
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # проверяем титул и заголовок страницы утверждением "To-Do"
         self.assertIn('To-Do lists', self.browser.title)
