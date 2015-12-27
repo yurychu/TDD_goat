@@ -22,7 +22,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
     def tearDownClass(cls):
         if cls.server_url == cls.live_server_url:
             super().tearDownClass()
-    
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -40,7 +39,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Функциональный тест приложения составления списка дел
         # здесь проверяем нашу домашнюю страницу
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # проверяем титул и заголовок страницы утверждением "To-Do"
         self.assertIn('To-Do lists', self.browser.title)
@@ -140,7 +139,4 @@ class NewVisitorTest(StaticLiveServerTestCase):
                 512,
                 delta=5
                 )
-
-if __name__ == "__main__":
-    unittest.main(warnings='ignore')
 
