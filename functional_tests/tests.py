@@ -123,7 +123,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.browser.get(self.server_url)
         self.browser.set_window_size(1024, 768)
 
-        # Она видит строку ввода красиво расположенной по центру
+        # Она видит строку ввода красиво расположенную по центру
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
                 inputbox.location['x'] + inputbox.size['width'] / 2,
