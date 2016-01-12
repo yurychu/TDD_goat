@@ -34,3 +34,17 @@ class ItemValidatorTest(FunctionalTest):
         self.check_for_row_in_list_table('2.Make tea')
         # self.fail("write me!")
 
+    def test_cannot_add_duplicate_items(self):
+        # Эдит заходит на домашнюю страницу и начинает новый список
+        self.browser.get(self.server_url)
+        self.get_item_input_box().send_keys('Buy wellies\n')
+        self.check_for_row_in_list_table('1.Buy wellies')
+
+        # Она случайно пытается добавить такую же задачу еще раз
+        self.get_item_input_box().send_keys('Buy wellies\n')
+
+        # Она видит подсказку об ошибке
+        self.check_for_row_in_list_table('1.Buy wellies')
+        error = self.browser.find_element_by_css_selector('.has-error')
+        self.assertEqual(error.text, "You've already got this in your list")
+
