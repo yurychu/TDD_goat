@@ -5,6 +5,7 @@ import random
 
 REPO_URL='https://github.com/yurychu/TDD_goat'
 
+
 def deploy():
 	site_folder = '/home/%s/sites/%s' % (env.user, env.host)
 	source_folder = site_folder + '/source'
