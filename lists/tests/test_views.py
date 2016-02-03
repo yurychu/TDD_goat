@@ -45,7 +45,7 @@ class ListViewTest(TestCase):
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
-        
+
         self.assertNotContains(response, 'other list item 1')
         self.assertNotContains(response, 'other list item 2')
 
@@ -177,7 +177,9 @@ class NewItemTest(TestCase):
         self.assertEqual(response.context['list'], correct_list)
 
 
-# Create your tests here.
-# class SmokeTest(TestCase):
-#    def test_bad_maths(self):
-#        self.assertEqual(1 + 1, 3)
+class MyListsTest(TestCase):
+
+    def test_my_lists_url_renders_my_lists_template(self):
+        response = self.client.get('/lists/users/a@b.com/')
+        self.assertTemplateUsed(response, 'my_lists.html')
+
