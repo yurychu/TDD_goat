@@ -171,11 +171,17 @@ class NewListTest(TestCase):
         mock_list.save = Mock()
         mockList.return_value = mock_list
         request = HttpRequest()
-        request.user = User.objects.create()
+        request.user = Mock()
+        request.user.is_authenticated.return_value = True
         request.POST['text'] = 'new list item'
-        new_list(request)
-        self.assertEqual(mock_list.owner, request.user)
 
+        def check_owner_assigned():
+            self.assertEqual(mock_list.owner, request.user)
+        mock_list.save.side_effect = check_owner_assigned
+
+        new_list(request)
+
+        mock_list.save.assert_called_once_with()
     # def test_for_invalid_input_passes_form_to_template(self):
     #     response = self.client.post('/list/new', data={'text': ''})
     #     self.assertIsInstance(response.context['form'], ItemForm)
