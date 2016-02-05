@@ -16,6 +16,8 @@ from lists.forms import (
         DUPLICATE_ITEM_ERROR, ExistingListItemForm,
         )
 
+from lists.views import new_list
+
 
 class HomePageTest(TestCase):
 
@@ -165,6 +167,14 @@ class NewListTest(TestCase):
     def test_validation_error_are_shown_on_home_page(self):
         response = self.client.post('/lists/new', data={'text': ''})
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
+
+    def test_list_owner_is_saved_if_user_is_authentication(self):
+        request = HttpRequest()
+        request.user = User.objects.create(email='a@b.com')
+        request.POST['text'] = 'new list item'
+        new_list(request)
+        list_ = List.objects.first()
+        self.assertEqual(list_.owner, request.user)
 
     # def test_for_invalid_input_passes_form_to_template(self):
     #     response = self.client.post('/list/new', data={'text': ''})
