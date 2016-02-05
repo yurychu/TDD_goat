@@ -1,3 +1,4 @@
+import unittest
 from unittest.mock import Mock, patch
 
 from django.test import TestCase
@@ -131,7 +132,7 @@ class ListViewTest(TestCase):
         self.assertEqual(Item.objects.all().count(), 1)
 
 
-class NewListTest(TestCase):
+class NewListViewIntegratedTest(TestCase):
 
     def test_saving_a_POST_request(self):
         self.client.post(
@@ -165,26 +166,16 @@ class NewListTest(TestCase):
         response = self.client.post('/lists/new', data={'text': ''})
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
 
-    @patch('lists.views.List')
-    def test_list_owner_is_saved_if_user_is_authenticated(self, mockList):
-        mock_list = List.objects.create()
-        mock_list.save = Mock()
-        mockList.return_value = mock_list
+    @unittest.skip
+    def test_list_owner_is_saved_if_user_is_authenticated(self):
         request = HttpRequest()
-        request.user = Mock()
-        request.user.is_authenticated.return_value = True
+        request.user = User.objects.create(email='a@b.com')
         request.POST['text'] = 'new list item'
-
-        def check_owner_assigned():
-            self.assertEqual(mock_list.owner, request.user)
-        mock_list.save.side_effect = check_owner_assigned
 
         new_list(request)
 
-        mock_list.save.assert_called_once_with()
-    # def test_for_invalid_input_passes_form_to_template(self):
-    #     response = self.client.post('/list/new', data={'text': ''})
-    #     self.assertIsInstance(response.context['form'], ItemForm)
+        list_ = List.objects.first()
+        self.assertEqual(list_.owner, request.user)
 
 
 class NewItemTest(TestCase):
