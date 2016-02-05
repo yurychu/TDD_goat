@@ -14,7 +14,7 @@ from lists.forms import (
         DUPLICATE_ITEM_ERROR, ExistingListItemForm,
         )
 
-from lists.views import new_list
+from lists.views import new_list, new_list2
 
 
 class HomePageTest(TestCase):
@@ -26,6 +26,18 @@ class HomePageTest(TestCase):
     def test_home_page_uses_item_form(self):
         response = self.client.get('/')
         self.assertIsInstance(response.context['form'], ItemForm)
+
+
+@patch('lists.views.NewListForm')
+class NewListViewUnitTest(unittest.TestCase):
+
+    def setUp(self):
+        self.request = HttpRequest()
+        self.request.POST['text'] = 'new list item'
+
+    def test_passes_POST_data_to_NewListForm(self, mockNewListForm):
+        new_list2(self.request)
+        mockNewListForm.assert_called_once_with(data=self.request.POST)
 
 
 class ListViewTest(TestCase):
