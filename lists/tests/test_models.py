@@ -81,3 +81,8 @@ class ListModelTest(TestCase):
         List.create_new(first_item_text='new item text', owner=user)
         new_list = List.objects.first()
         self.assertEqual(new_list.owner, user)
+
+    def test_create_returns_new_list_object(self):
+        returned = List.create_new(first_item_text='new item text')
+        new_list = List.objects.first()
+        self.assertEqual(returned, new_list)
