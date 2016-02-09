@@ -198,29 +198,13 @@ class NewListViewIntegratedTest(TestCase):
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
-    def test_redirects_after_POST(self):
-        response = self.client.post(
-                '/lists/new',
-                data={'text': 'A new list item'}
-                )
-        new_list = List.objects.first()
-        self.assertRedirects(response, '/lists/%d/' % (new_list.id,))
-
-    def test_invalid_list_items_arent_saved(self):
-        self.client.post('/lists/new', data={'text': ''})
+    def test_for_invalid_input_doesnt_save_but_shows_errors(self):
+        response = self.client.post('/lists/new', data={'text': ''})
         self.assertEqual(List.objects.count(), 0)
-        self.assertEqual(Item.objects.count(), 0)
-
-    def test_for_invalid_input_renders_home_template(self):
-        response = self.client.post('/lists/new', data={'text': ''})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'home.html')
-
-    def test_validation_error_are_shown_on_home_page(self):
-        response = self.client.post('/lists/new', data={'text': ''})
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
 
-    def test_list_owner_is_saved_if_user_is_authenticated(self):
+
+    def test_list_owner_if_user_logged_in(self):
         request = HttpRequest()
         request.user = User.objects.create(email='a@b.com')
         request.POST['text'] = 'new list item'
