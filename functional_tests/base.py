@@ -43,7 +43,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
-        if self._test_has_failed()
+        if self._test_has_failed():
             if not os.path.exists(SCREEN_DUMP_LOCATION):
                 os.makedirs(SCREEN_DUMP_LOCATION)
             for ix, handle in enumerate(self.browser.window_handles):
