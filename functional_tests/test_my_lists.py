@@ -35,7 +35,9 @@ class MyListTest(FunctionalTest):
 
         # Она видит, что еще списки там, под именем первого элемента
         self.browser.find_element_by_link_text('Reticulate splines').click()
-        self.assertEqual(self.browser.current_url, first_list_url)
+        self.wait_for(
+            lambda: self.assertEqual(self.browser.current_url, first_list_url)
+        )
 
         # Она принимает решение начать другой список
         self.browser.get(self.server_url)
